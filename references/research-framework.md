@@ -83,10 +83,10 @@ If a gate requires user selection/confirmation and `AskUserQuestion` is availabl
 | full-auto | All dl-research workflow steps, including candidate selection, implementation, runs, resolution decisions, and restarts | Only higher-priority system, tool, security, or explicit user permission requirements | User wants maximum automation |
 | strict-confirmation | Read context and propose next step | Every phase transition, file edit, command, implementation, or run | Fragile projects or high uncertainty |
 
-Full-auto gate bypass rules:
-- dl-research workflow gates may be bypassed after the user selects `full-auto`;
-- bypassed gates must be recorded in the final or archive note;
-- the agent must still capture evidence, diagnosis, verification status, and unresolved restart point;
+Full-auto gate rules:
+- ALL gates are non-blocking in `full-auto`: the agent executes every gate internally but never pauses to ask the user;
+- all gate results (verdicts, bypasses, decisions) are recorded for post-hoc review;
+- the agent continues autonomously until the stated goal is achieved or the problem is proven unachievable;
 - the agent must not claim a conclusion is verified unless the evidence supports it;
 - this mode does not override higher-priority system, tool, security, or explicit user permission requirements.
 

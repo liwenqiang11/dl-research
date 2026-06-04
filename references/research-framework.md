@@ -77,11 +77,11 @@ Required uses:
 
 If a gate requires user selection/confirmation and `AskUserQuestion` is available but not called, set `阶段门控：blocked`, record Gate Noncompliance, and return to the missing gate.
 
-| Mode | Agent May Do Automatically | Must Confirm Before | Best For |
-|------|----------------------------|---------------------|----------|
-| guided | Observe, Classify, Gather, Evidence Pack, Diagnosis, candidate generation, low-risk analysis | Design changes, implementation, long runs, resolution decisions with tradeoffs | Default collaborative research |
-| full-auto | All dl-research workflow steps, including candidate selection, implementation, runs, resolution decisions, and restarts | Only higher-priority system, tool, security, or explicit user permission requirements | User wants maximum automation |
-| strict-confirmation | Read context and propose next step | Every phase transition, file edit, command, implementation, or run | Fragile projects or high uncertainty |
+| Mode | Role | Agent May Do Automatically | Must Confirm Before | Best For |
+|------|------|----------------------------|---------------------|----------|
+| guided | 研究助手 | Observe, Classify, Gather, Evidence Pack, Diagnosis, candidate generation, low-risk analysis | Design changes, implementation, long runs, resolution decisions with tradeoffs | Collaborative research, user wants to stay in the loop |
+| full-auto | 独立研究专家 | All dl-research workflow steps, including candidate selection, implementation, runs, resolution decisions, and restarts | Never — goal-driven, stops only when achieved or proven unachievable | Maximum automation, user trusts the model as an expert |
+| strict-confirmation | 严格确认 | Read context and propose next step | Every phase transition, file edit, command, implementation, or run | Fragile projects or high uncertainty |
 
 Full-auto gate rules:
 - ALL gates are non-blocking in `full-auto`: the agent executes every gate internally but never pauses to ask the user;

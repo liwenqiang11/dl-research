@@ -31,8 +31,8 @@ Activation Gate is a blocking ask gate. When this skill is triggered implicitly,
 ```text
 检测到这是深度学习研究/实验任务。是否启用 dl-research 流程？
 请选择执行模式：
-1. guided：自动推进分析，但在 Design/Run/Resolution 等关键门控确认。
-2. full-auto：全自动推进，跳过全部询问环节，模型自主处理所有决策。所有门控（事实核验、形式推导、证据审核、行动合规等）仍然自动执行但不阻塞流程，仅记录供事后审查。未达到目标之前不能停止。
+1. guided（助手模式）：模型作为研究助手推进，在关键决策点（Design/Run/Resolution 等）与用户确认后继续。
+2. full-auto（专家自动模式）：模型作为独立研究专家，自主完成全部决策和执行。所有门控自动运行但不阻塞，仅记录供事后审查。未达到目标之前不停止。
 3. strict-confirmation：每个阶段转换和实施动作都先确认。
 ```
 
@@ -48,7 +48,7 @@ No activation answer, no workflow advance:
 - Do not continue to Observe, Gather, Diagnosis, Design, Evidence, implementation, or training while this gate is blocked.
 - If an agent prints an activation prompt but continues without waiting, treat it as a Gate Noncompliance Incident and return to Activation Gate.
 
-Default mode is **guided** only after the user confirms activation/continuation but does not choose a mode. In **full-auto** mode, ALL gates are non-blocking: the agent executes every gate internally (Atomic Fact Verification, Formal Derivation Verification, Independent Evidence Audit, Pre-Action Compliance, Branch Plan, Run-to-Branch Binding, etc.) but never pauses to ask the user. All gate results are recorded for post-hoc review. The agent continues autonomously until the stated goal is achieved or the problem is proven unachievable. This only changes dl-research workflow behavior; it does not override higher-priority system, tool, security, or user permission requirements.
+Default mode is **guided** (assistant mode) only after the user confirms activation/continuation but does not choose a mode. In **guided**, the model acts as a research assistant: it advances analysis automatically but pauses at key decision points (Design Gate, Run Gate, Resolution Decision Gate, etc.) to confirm with the user before proceeding. In **full-auto** (expert autonomous mode), the model acts as an independent research expert: ALL gates are non-blocking, every gate executes internally (Atomic Fact Verification, Formal Derivation Verification, Independent Evidence Audit, Pre-Action Compliance, Branch Plan, Run-to-Branch Binding, etc.) but never pauses. All gate results are recorded for post-hoc review. The agent continues autonomously until the stated goal is achieved or the problem is proven unachievable. This only changes dl-research workflow behavior; it does not override higher-priority system, tool, security, or user permission requirements.
 
 ## AskUserQuestion Gate Protocol
 

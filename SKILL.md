@@ -190,7 +190,12 @@ For every deep learning research task, run this state machine automatically. The
 
 ## Subagent Isolation Rules for Verification
 
-Atomic Fact Verification and Formal Derivation Verification must run as independent subagents with context isolation, not as inline steps by the main agent.
+Atomic Fact Verification and Formal Derivation Verification must run as independent subagents via the Agent tool, not inline by the main agent. See `references/atomic-fact-verification.md` and `references/formal-derivation-verifier.md` for the exact Agent tool call prompt templates.
+
+**How to spawn (runtime):**
+- Fact Verifier: `Agent(description="Atomic Fact Verification", prompt=<claims + artifact manifest only>)`
+- Derivation Verifier: `Agent(description="Formal Derivation Verification", prompt=<claims + definitions + assumptions + code paths only>)`
+- Both can be spawned in the same turn for parallel execution.
 
 **Fact Verifier subagent isolation:**
 - Input: factual claims + artifact manifest only.
@@ -205,11 +210,11 @@ Atomic Fact Verification and Formal Derivation Verification must run as independ
 - The main agent consumes the verdict but cannot override invalid verdicts.
 
 **Parallelism:**
-- Fact Verifier and Derivation Verifier can run in parallel.
+- Fact Verifier and Derivation Verifier can run in parallel (spawn both Agent calls in the same turn).
 - Debate Brainstorming Round 1 can also run in parallel with both verifiers.
 - Independent Evidence Auditor must wait for both verifiers to complete before starting.
 
-**When an independent subagent mechanism is unavailable:**
+**When the Agent tool is unavailable:**
 - Mark the verification as `non-independent`, explain the limitation, and downgrade any conclusion that depends on it.
 
 ## Phase-Gated Audit Dispatch

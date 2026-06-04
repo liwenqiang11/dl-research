@@ -143,55 +143,48 @@ trace(L_Y) rewards quality of selected/GT items through q_i^2. It does not direc
 
 ## Subagent Execution Protocol
 
-Formal Derivation Verification must run as an independent subagent, not inline by the main agent.
+Formal Derivation Verification must run as an independent subagent via the Agent tool, not inline by the main agent.
 
-### Input Contract
+### How to spawn the Derivation Verifier
 
-The main agent prepares and sends to the Derivation Verifier subagent:
+Use the Agent tool with the following prompt structure. The prompt must contain ONLY claims, definitions, assumptions, and code paths — no diagnosis, no design, no recommendation.
 
-```json
-{
-  "audit_id": "deriv-verify-<timestamp>",
-  "claims": [
-    {
-      "id": "D1",
-      "claim": "trace(L_Y) rewards both quality and diversity",
-      "formula": "L = diag(q) S diag(q), trace(L_Y) = sum_i q_i^2",
-      "code_ref": "loss.py:45-60"
-    }
-  ],
-  "definitions": [
-    "L = diag(q) S diag(q)",
-    "L_ij = q_i S_ij q_j",
-    "trace(L_Y) = sum_{i in Y} L_ii",
-    "S_ii = 1"
-  ],
-  "assumptions": [
-    "S is a similarity matrix with S_ii = 1",
-    "q_i >= 0"
-  ],
-  "artifact_manifest": [
-    {
-      "path": "loss.py",
-      "description": "loss computation code"
-    }
-  ]
-}
 ```
+Agent(
+  description="Formal Derivation Verification",
+  prompt="""
+You are an independent Derivation Verifier. Your ONLY job is to verify whether mathematical, gradient, objective, and mechanism claims follow from the stated definitions, assumptions, and code. You must NOT propose diagnoses, designs, fixes, or recommendations.
 
-### What the subagent MUST NOT receive
+## Claims to Verify
 
-- Main agent's diagnosis draft or narrative
-- Main agent's design preference or recommended solution
-- Main agent's conversation summary or private reasoning
-- User preference signals about the desired conclusion
-- Execution pressure such as "this derivation must be valid so we can proceed"
+<claims>
+{claims_json}
+</claims>
 
-### Output Contract
+## Definitions
 
-The Derivation Verifier subagent returns:
+<definitions>
+{definitions}
+</definitions>
 
-```markdown
+## Assumptions
+
+<assumptions>
+{assumptions}
+</assumptions>
+
+## Artifact Manifest (code paths to inspect)
+
+<artifacts>
+{artifact_manifest}
+</artifacts>
+
+## Instructions
+
+1. For each claim, verify the derivation step by step
+2. Check: Are all symbols defined? Are matrix sizes correct? Does the gradient path include the claimed variable? Is there a counterexample?
+3. For each claim, output:
+
 ## Formal Derivation Verification
 - Claim under review:
 - Atomic facts used:
@@ -205,20 +198,57 @@ The Derivation Verifier subagent returns:
 - Verdict: valid / invalid / partially-valid / assumption-dependent / unverifiable
 - Corrected statement:
 - Downstream action: use / downgrade / block / gather facts / run diagnostic
+
+4. Verdict must be exactly one of: valid / invalid / partially-valid / assumption-dependent / unverifiable
+5. "valid" only if the derivation follows from the stated definitions and assumptions without gaps
+6. Do NOT propose mechanisms, designs, fixes, or recommendations
+7. Do NOT use empirical metrics as proof of a mathematical claim
+
+Return ONLY the verification report. No other output.
+"""
+)
 ```
+
+### Claims format
+
+```json
+[
+  {
+    "id": "D1",
+    "claim": "trace(L_Y) rewards both quality and diversity",
+    "formula": "L = diag(q) S diag(q), trace(L_Y) = sum_i q_i^2",
+    "code_ref": "loss.py:45-60"
+  }
+]
+```
+
+### What the prompt MUST NOT contain
+
+- Main agent's diagnosis draft or narrative
+- Main agent's design preference or recommended solution
+- Main agent's conversation summary or private reasoning
+- User preference signals about the desired conclusion
+- Execution pressure such as "this derivation must be valid so we can proceed"
 
 ### Context Isolation
 
-- The Derivation Verifier reviews only the claims, definitions, assumptions, and artifact manifest.
+- The Derivation Verifier receives only claims + definitions + assumptions + artifact manifest via the prompt.
 - It must not read the main agent's diagnosis, design, recommendation, or conversation summary.
-- It outputs only the verdict, derivation steps, corrected statements, and downstream actions.
+- It outputs only the verification report.
 - The main agent must not reinterpret, soften, or upgrade verdicts. If the main agent disagrees, it must gather new evidence and submit a new verification request.
 
 ### Parallelism
 
-- Derivation Verifier can run in parallel with Fact Verifier.
+- Derivation Verifier can run in parallel with Fact Verifier (spawn both Agent calls in the same turn).
 - Debate Brainstorming Round 1 can also run in parallel with both verifiers.
 - Independent Evidence Auditor must wait for both verifiers to complete.
+
+### Fallback
+
+When the Agent tool is unavailable:
+- Mark the verification as `non-independent`;
+- Explain the limitation;
+- Downgrade any conclusion that depends on the verification unless the user explicitly accepts the limitation.
 
 ### Fallback
 

@@ -144,8 +144,75 @@ When reviewing another agent's output, extract factual claims before judging con
 - "0522 uses the combined dataset" -> verify config paths in `train.log`, command/config file, or run sheet before using it.
 - "0519 is the best experiment" -> verify all compared metric values and comparability before labeling it best.
 
-## Interaction With Evidence Review
+## Interaction With Independent Evidence Audit
 
 Independent Evidence Audit consumes the Atomic Fact Verification table. It does not replace it.
 
 Independent Evidence Audit may judge whether verified facts support a conclusion, but it must not allow claims that depend on `false`, `unverifiable`, `insufficient-source`, or `not-checked` facts unless the conclusion is explicitly downgraded and the unsupported fact is not used as support.
+
+## Subagent Execution Protocol
+
+Atomic Fact Verification must run as an independent subagent, not inline by the main agent.
+
+### Input Contract
+
+The main agent prepares and sends to the Fact Verifier subagent:
+
+```json
+{
+  "audit_id": "fact-verify-<timestamp>",
+  "claims": [
+    {
+      "id": "F1",
+      "claim": "GT has 5 angles",
+      "source_type": "dataset/label/split",
+      "source_ref": "data/labels.json line 42"
+    }
+  ],
+  "artifact_manifest": [
+    {
+      "path": "data/labels.json",
+      "description": "label file with angle annotations"
+    }
+  ]
+}
+```
+
+### What the subagent MUST NOT receive
+
+- Main agent's diagnosis draft or narrative
+- Main agent's design preference or recommended solution
+- Main agent's conversation summary or private reasoning
+- User preference signals about the desired conclusion
+- Execution pressure such as "this fact must be true so we can proceed"
+
+### Output Contract
+
+The Fact Verifier subagent returns:
+
+```markdown
+## Atomic Fact Verification
+| Fact ID | Factual claim | Source required | Source checked | Verification method | Verdict | Reason | Downstream action |
+|---------|---------------|-----------------|----------------|---------------------|---------|--------|-------------------|
+| F1 |  |  |  |  | true / false / unverifiable / insufficient-source / not-checked |  | use / downgrade / block / gather evidence |
+```
+
+### Context Isolation
+
+- The Fact Verifier reviews only the claims and artifact manifest.
+- It must not read the main agent's diagnosis, design, recommendation, or conversation summary.
+- It outputs only the verdict table, reasons, and downstream actions.
+- The main agent must not reinterpret, soften, or upgrade verdicts. If the main agent disagrees, it must gather new evidence and submit a new verification request.
+
+### Parallelism
+
+- Fact Verifier can run in parallel with Derivation Verifier.
+- Debate Brainstorming Round 1 can also run in parallel with both verifiers.
+- Independent Evidence Auditor must wait for both verifiers to complete.
+
+### Fallback
+
+When an independent subagent mechanism is unavailable:
+- Mark the verification as `non-independent`;
+- Explain the limitation;
+- Downgrade any conclusion that depends on the verification unless the user explicitly accepts the limitation.

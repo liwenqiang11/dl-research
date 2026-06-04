@@ -115,8 +115,8 @@ Use this contract as the backbone of every Discovery, Design, or Evidence task.
 |------|---------------|-----------------|--------------|
 | Problem | What exactly must be solved? | Problem statement, success signal, constraints | Vague goal or moving target |
 | Evidence Pack | What do we know, what is missing, and how confident are we? | Facts, artifacts, assumptions, contradictions, confidence | Guessing from memory |
-| Atomic Fact Verification | Is every objective factual claim correct according to artifacts? | Atomic Fact Verification table | False or unverified facts contaminate reasoning |
-| Formal Derivation Verification | Does the mathematical or mechanism conclusion follow? | Formal Derivation Verification report | Valid facts but invalid reasoning |
+| Atomic Fact Verification | Spawn independent Fact Verifier subagent. Is every objective factual claim correct according to artifacts? | Atomic Fact Verification table | False or unverified facts contaminate reasoning |
+| Formal Derivation Verification | Spawn independent Derivation Verifier subagent. Does the mathematical or mechanism conclusion follow? | Formal Derivation Verification report | Valid facts but invalid reasoning |
 | Independent Evidence Audit | Do verified facts form an evidence chain that supports the claim? | Independent Evidence Auditor verdict with allowed conclusion strength | Unsupported or overstated conclusions |
 | Mechanistic Analysis | What underlying mechanism or root cause explains the evidence? | Mechanistic Model Analyst Report with competing causes and discriminating test | Treating symptoms as causes |
 | Diagnosis | What kind of problem is this? | Root-cause class and competing causes | Treating symptoms as causes |

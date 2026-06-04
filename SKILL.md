@@ -102,8 +102,8 @@ This loop is the primary behavior. The agent execution states implement it:
 |----------------------|----------------|---------|
 | Problem | Observe, Classify | Define what must be solved, the success criterion, constraints, and risk. |
 | Evidence Pack | Gather | Collect required artifacts, label confidence, and separate facts from assumptions. |
-| Atomic Fact Verification | Gather, Verify | Verify every objective factual claim from any role or phase against artifacts before it is used downstream. |
-| Formal Derivation Verification | Verify | Check whether mathematical, gradient, dependency, objective, and mechanism claims follow from verified facts, definitions, formulas, and assumptions. |
+| Atomic Fact Verification | Gather, Verify | Spawn an independent Fact Verifier subagent. It receives claims + artifact manifest only; it must not see the main agent's diagnosis, design, or recommendation. It verifies every objective factual claim against artifacts and returns a verdict table. |
+| Formal Derivation Verification | Verify | Spawn an independent Derivation Verifier subagent. It receives claims + definitions + code paths only; it must not see the main agent's diagnosis or design preferences. It checks whether mathematical, gradient, objective, and mechanism claims follow from verified facts and returns a verdict + corrected statements. |
 | Independent Evidence Audit | Gather, Verify | Ask an independent Evidence Auditor to audit whether verified facts form a traceable, reproducible, comparable, contradiction-aware evidence chain strong enough for the claim. |
 | Mechanistic Analysis | Gather, Route, Verify | Analyze the task, data signal, architecture, loss, optimization dynamics, code path, and causal root causes behind the observed behavior. |
 | Diagnosis | Route | Decide the problem type and competing causes. |
@@ -160,8 +160,8 @@ For every deep learning research task, run this state machine automatically. The
 | Observe | Read the user request, active files if available, repository clues, prior logs, configs, and relevant docs. | Context snapshot | The visible context explains the task surface. | Ask for missing artifacts only if they cannot be discovered. |
 | Classify | Determine task type, risk level, loop level, and whether this is Discovery, Design, Evidence implementation, training, diagnosis, analysis, or recording. | Task card | Task type and risk are explicit. | If ambiguous, present a short narrowing question. |
 | Gather | Build an evidence pack: code paths, configs, metrics, logs, prior reports, baselines, papers, run artifacts, missing evidence, assumptions, and confidence. | Evidence pack | Evidence is sufficient to diagnose or the missing evidence is explicit. | If evidence contradicts itself, route to diagnosis or gather targeted evidence. |
-| Atomic Fact Verification | Extract and verify every objective factual claim from any agent output before using it downstream. | Atomic Fact Verification table | All facts used downstream are `true`; non-true facts are corrected, downgraded, blocked, or sent for evidence gathering. | If any critical fact is `false`, `unverifiable`, `insufficient-source`, or `not-checked`, stop the dependent conclusion. |
-| Formal Derivation Verification | Verify every mathematical, gradient, dependency, objective, equivalence, and mechanism claim before using it downstream. | Formal Derivation Verification report | Claims are `valid` or explicitly bounded as `partially-valid` / `assumption-dependent`. | If `invalid` or `unverifiable`, correct, downgrade, block, or gather missing facts before proceeding. |
+| Atomic Fact Verification | Spawn an independent Fact Verifier subagent. It receives only claims + artifact manifest; it must not see diagnosis, design, or recommendation. It extracts and verifies every objective factual claim against artifacts. | Atomic Fact Verification table | All facts used downstream are `true`; non-true facts are corrected, downgraded, blocked, or sent for evidence gathering. | If any critical fact is `false`, `unverifiable`, `insufficient-source`, or `not-checked`, stop the dependent conclusion. |
+| Formal Derivation Verification | Spawn an independent Derivation Verifier subagent. It receives only claims + definitions + code paths; it must not see diagnosis or design preferences. It verifies every mathematical, gradient, objective, and mechanism claim. | Formal Derivation Verification report | Claims are `valid` or explicitly bounded as `partially-valid` / `assumption-dependent`. | If `invalid` or `unverifiable`, correct, downgrade, block, or gather missing facts before proceeding. |
 | Independent Evidence Audit | Audit the evidence chain after Atomic Fact Verification. Use an independent Evidence Auditor whenever the next step depends on gathered evidence. | Evidence Auditor verdict | Verdict is `pass` or bounded `conditional-pass`. | If `fail` or `insufficient-evidence`, return to Atomic Fact Verification, Evidence Pack, Formal Derivation Verification, or targeted evidence gathering. |
 | Route | Select the next work mode: Discovery, Design, Evidence implementation, sanity check, training plan, monitoring, analysis, decision, or record. | Route decision | The selected mode follows from evidence. | If no route is safe, return to Gather or ask. |
 | Mechanistic Analysis | When relevant, inspect the task mechanism, data signal, architecture, loss, optimization dynamics, code path, and competing root causes before diagnosis or design. | Mechanistic Model Analyst Report | The report gives a falsifiable root-cause hypothesis or states the minimal discriminating test. | If static analysis is insufficient, require a probe, sanity check, or runtime check. |
@@ -187,6 +187,30 @@ For every deep learning research task, run this state machine automatically. The
 - Express the diagnosis as a falsifiable statement: "If this diagnosis is correct, then this verification signal should change."
 - Prefer the smallest diagnostic check that can discriminate between plausible causes.
 - If evidence is insufficient, ask for the missing artifact or propose the next evidence-gathering step instead of redesigning.
+
+## Subagent Isolation Rules for Verification
+
+Atomic Fact Verification and Formal Derivation Verification must run as independent subagents with context isolation, not as inline steps by the main agent.
+
+**Fact Verifier subagent isolation:**
+- Input: factual claims + artifact manifest only.
+- Must NOT receive: main agent's diagnosis draft, design preference, recommendation, or conversation summary.
+- Output: verdict table (true / false / unverifiable / insufficient-source / not-checked).
+- The main agent consumes the verdict table but cannot upgrade or override verdicts.
+
+**Derivation Verifier subagent isolation:**
+- Input: formal claims + definitions + assumptions + code paths only.
+- Must NOT receive: main agent's diagnosis, design preference, or recommendation.
+- Output: verdict (valid / invalid / partially-valid / assumption-dependent / unverifiable) + corrected statements.
+- The main agent consumes the verdict but cannot override invalid verdicts.
+
+**Parallelism:**
+- Fact Verifier and Derivation Verifier can run in parallel.
+- Debate Brainstorming Round 1 can also run in parallel with both verifiers.
+- Independent Evidence Auditor must wait for both verifiers to complete before starting.
+
+**When an independent subagent mechanism is unavailable:**
+- Mark the verification as `non-independent`, explain the limitation, and downgrade any conclusion that depends on it.
 
 ## Phase-Gated Audit Dispatch
 

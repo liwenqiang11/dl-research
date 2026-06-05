@@ -1,7 +1,7 @@
 ---
 name: dl-research
 description: Use this skill for deep learning algorithm research and experiment workflows: finding research problems, reading/comparing papers, forming hypotheses, designing models/losses/training protocols, implementing experiments, running sanity checks, diagnosing training logs, planning baselines/ablations, analyzing results, or tuning after a failure diagnosis. Always use for ML/DL research tasks involving Discovery, Design, or Evidence, even when the user only says "run training", "analyze loss", "design an experiment", "write an architecture", "compare baselines", or "debug a model".
-version: 0.2.23
+version: 0.3.0
 ---
 
 # Deep Learning Experimental Research Framework

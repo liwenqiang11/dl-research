@@ -150,6 +150,7 @@ Discovery → Design → Evidence
 - Use `scripts/freeze_env.sh` before long training or when reproducibility evidence is requested.
 - Use `scripts/sanity_check.py` when the target training script exposes a sanity mode, or when a configured sanity command should be run.
 - Use `scripts/monitor_training.py` after launching long training, or when diagnosing whether monitoring is active. Run it in `--once` mode for a single check or as a persistent runner for periodic checks.
+- Use `scripts/probe_activations.py` when the task needs gradient checks, activation analysis, dead module detection, attention extraction, or information flow tracking. Modes: `gradient`, `activation`, `dead-check`, `attention`, `flow`.
 
 ## Agent Automation Protocol
 
@@ -568,6 +569,7 @@ Required output:
 - **`scripts/sanity_check.py`** — Minimal training loop for sanity check: overfit a tiny batch and verify loss convergence.
 - **`scripts/freeze_env.sh`** — Freeze current Python/conda environment for reproducibility.
 - **`scripts/monitor_training.py`** — Persistent Active Monitoring runner: periodically checks logs, metrics, checkpoints, and optional process liveness, then writes `monitoring_events.jsonl` and `monitoring_state.json`.
+- **`scripts/probe_activations.py`** — Hook-based model probe: gradient flow check, activation distributions, dead module detection, attention extraction, information flow tracking. Modes: `gradient`, `activation`, `dead-check`, `attention`, `flow`.
 
 ### Example Files
 

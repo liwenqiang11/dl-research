@@ -120,7 +120,7 @@ Use this contract as the backbone of every Discovery, Design, or Evidence task.
 | Independent Evidence Audit | Do verified facts form an evidence chain that supports the claim? | Independent Evidence Auditor verdict with allowed conclusion strength | Unsupported or overstated conclusions |
 | Mechanistic Analysis | What underlying mechanism or root cause explains the evidence? | Mechanistic Model Analyst Report with competing causes and discriminating test | Treating symptoms as causes |
 | Diagnosis | What kind of problem is this? | Root-cause class and competing causes | Treating symptoms as causes |
-| Debate Brainstorming | What possible solutions could address the diagnosis? Run multi-Advocate debate to find the best approach. | Debate verdict with convergence analysis, ranked candidates, fusion proposal, unresolved disputes | Single-solution fixation |
+| Deep Research Brainstorming | What possible solutions could address the diagnosis? Run multi-Advocate debate to find the best approach. | Debate verdict with convergence analysis, ranked candidates, fusion proposal, unresolved disputes | Single-solution fixation |
 | Pre-Action Compliance | Is it safe and compliant to act now? | Pre-Action Compliance Check | Editing or running before required gates |
 | Branch Plan | What Git branch isolates this research change? | Base branch, base commit, new branch, scope, expected files, rollback point | Experiments contaminate each other |
 | Implementation | What is the smallest useful step? | Patch, design, command, analysis, or check | Overbroad redesign |
@@ -151,7 +151,7 @@ The current stage automatically dispatches required audit gates. Do not wait for
 | Mechanistic Analysis | Objective fact | Atomic Fact Verification |
 | Mechanistic Analysis | Mathematical, gradient, objective, mechanism, or design-rationale claim | Formal Derivation Verification |
 | Diagnosis | Root-cause claim | Independent Evidence Audit after required fact/derivation checks |
-| Design / Debate Brainstorming | Design rationale, debate verdict, or selected strategy | Atomic + Formal where applicable + Independent Evidence Audit |
+| Design / Deep Research Brainstorming | Design rationale, debate verdict, or selected strategy | Atomic + Formal where applicable + Independent Evidence Audit |
 | Pre-Action Compliance / Branch Plan | Edit/config/branch/train/evaluate action | Pre-Action Compliance and Branch Plan / Run-to-Branch prerequisites |
 | Implementation | Research edit | Pre-Action Compliance must be passed |
 | Verification / Result Analysis | Result metric/log/artifact fact | Atomic Fact Verification |
@@ -208,7 +208,7 @@ If a section has no content, keep the section and write `N/A` or `none` with a s
 ```markdown
 当前流程：第 X 步 - [task summary]
 当前循环层级：微循环 / 内循环迭代 N / 外循环迭代 M
-当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Debate Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
+当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Deep Research Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
 阶段门控：passed / required / blocked / not-applicable
 门控触发原因：objective-fact / formal-claim / evidence-chain-claim / action-request / training-run / user-memory-request / none
 
@@ -315,7 +315,7 @@ Run an automatic Independent Evidence Audit after Atomic Fact Verification and F
 ```
 
 Rules:
-- `pass` or explicitly bounded `conditional-pass` may proceed to Diagnosis, Debate Brainstorming, Resolution Decision, or Record.
+- `pass` or explicitly bounded `conditional-pass` may proceed to Diagnosis, Deep Research Brainstorming, Resolution Decision, or Record.
 - `fail` and `insufficient-evidence` must return to Atomic Fact Verification, Evidence Pack, or targeted evidence gathering.
 - The reviewer checks whether verified facts are sufficient for the claim; it does not perform informal fact checking, propose new algorithms, or tune parameters.
 - If evidence supports only a weak conclusion, downgrade the wording before proceeding.
@@ -342,7 +342,7 @@ Run Formal Derivation Verification for every mathematical, gradient, objective, 
 
 Rules:
 - Formal claims must use facts already checked by Atomic Fact Verification.
-- `invalid` and `unverifiable` derivations cannot support Diagnosis, Debate Brainstorming, commit messages, Resolution Decision, or Record.
+- `invalid` and `unverifiable` derivations cannot support Diagnosis, Deep Research Brainstorming, commit messages, Resolution Decision, or Record.
 - `partially-valid` claims must be rewritten to the supported part only.
 - `assumption-dependent` claims must carry their assumptions wherever used.
 
@@ -519,25 +519,28 @@ Rules:
 
 ## Solution Generation Methods
 
-Use Debate Brainstorming (see `references/debate-brainstorming.md`) as the primary method when the solution is not mechanically obvious. Single-agent methods below are fallbacks for trivial cases.
+Use Deep Research Brainstorming (see `references/debate-brainstorming.md`) as the primary method when the solution is not mechanically obvious. Single-agent methods below are fallbacks for trivial cases.
 
-### Debate Brainstorming (primary)
+### Deep Research Brainstorming (primary)
 
-Run a 3-round debate with 4 Advocates (data, model, loss, evaluation perspectives) and a Judge:
+5-phase structured research with knowledge gathering, solution space mapping, deep evaluation, cross-examination, and synthesis:
 
-| Round | Activity | Parallelism |
+| Phase | Activity | Parallelism |
 |-------|----------|-------------|
-| 1 — Independent Exploration | Each Advocate proposes their best solution through their lens | 4 parallel |
-| 2 — Cross-Attack | Each Advocate attacks the other 3 proposals | 4 parallel |
-| 3 — Revise | Each Advocate revises under attack, concedes valid points, absorbs good ideas | 4 parallel |
-| Judge | Synthesize: convergence analysis, survivability ranking, fusion, unresolved disputes | 1 call |
+| 1 — Knowledge Gathering | 4 Researchers: Literature Survey, Codebase Audit, Failure Analysis, Tool/Tech Landscape. Each actively gathers NEW knowledge. | 4 parallel |
+| 2 — Solution Space Mapping | Each Researcher maps ALL viable directions (≥2 each). Dedup and merge. | 4 parallel |
+| 3 — Deep Evaluation | Each candidate: mechanism derivation, evidence anchoring, cost estimation, verification design, devil's advocate. | 4-6 parallel |
+| 4 — Cross-Examination | Each Researcher reviews others' candidates from their professional perspective. | 4 parallel |
+| 5 — Synthesis | Judge: top-3 ranking, fusion proposal, knowledge gained, discriminating experiments, unresolved disputes. | 1 call |
+
+Total: 17-19 Agent calls, 5 parallel batches.
 
 Judge verdict types:
-- **Convergent**: Multiple perspectives agree → high confidence, proceed to Mechanistic Analysis.
-- **Fusable**: Perspectives are complementary → fuse best parts, verify each.
-- **Divergent**: Fundamental disagreement → design minimal discriminating experiment, re-enter debate with new evidence.
+- **Convergent**: Multiple directions agree → high confidence, proceed to Mechanistic Analysis.
+- **Fusable**: Directions are complementary → fuse best parts, verify each.
+- **Divergent**: Fundamental disagreement → design minimal discriminating experiment, re-enter with new evidence.
 
-On outer-loop restart, include previous debate conclusions and failed attempts as explicit evidence.
+On outer-loop restart, Failure Analysis Researcher receives ALL previous attempts as structured input.
 
 ### Single-agent fallbacks
 
@@ -573,7 +576,7 @@ Selection rule:
 - Regressions or tradeoffs:
 - What changed in the evidence pack:
 - Next step:
-- Restart point if unresolved: Problem / Evidence Pack / Diagnosis / Debate Brainstorming
+- Restart point if unresolved: Problem / Evidence Pack / Diagnosis / Deep Research Brainstorming
 ```
 
 Rules:
@@ -667,7 +670,7 @@ Rules:
 - [ ] In guided or strict-confirmation modes, user approval is obtained before creating or switching branches.
 
 ### Evidence Audit Gate
-- [ ] The audit was triggered after Atomic Fact Verification and before Diagnosis, Debate Brainstorming, Resolution Decision, or Record when claims depended on evidence.
+- [ ] The audit was triggered after Atomic Fact Verification and before Diagnosis, Deep Research Brainstorming, Resolution Decision, or Record when claims depended on evidence.
 - [ ] Every supporting fact appears in the Atomic Fact Verification table.
 - [ ] Every formal/mechanism claim appears in the Formal Derivation Verification report when applicable.
 - [ ] Assumptions are separated from facts.
@@ -696,7 +699,7 @@ Rules:
 - [ ] Best result is compared against baseline under compatible conditions.
 - [ ] Failure or improvement is attributed to evidence, not guesswork.
 - [ ] Status is one of: solved, partially solved, unresolved, needs more evidence, or invalid problem.
-- [ ] If unresolved, the restart point is named: Problem, Evidence Pack, Diagnosis, or Debate Brainstorming.
+- [ ] If unresolved, the restart point is named: Problem, Evidence Pack, Diagnosis, or Deep Research Brainstorming.
 - [ ] The reason for the decision is archived.
 
 ### Research Record Gate
@@ -960,7 +963,7 @@ The persistent runner stores each monitoring record as one JSON object per line 
 - **Design → Evidence** only when the candidate solution has been selected and the algorithm design, experiment protocol, metrics, baselines, ablations, and failure signals are explicit enough to implement.
 - **Evidence → Design** when sanity checks pass but results reject a design mechanism, ablations show the proposed component is irrelevant, or probes expose shortcut behavior.
 - **Evidence → Discovery** when the task definition, metric, data split, baseline assumption, or problem value is invalid.
-- **Unresolved → Restart** at Problem, Evidence Pack, Diagnosis, or Debate Brainstorming, based on the first invalid or uncertain step.
+- **Unresolved → Restart** at Problem, Evidence Pack, Diagnosis, or Deep Research Brainstorming, based on the first invalid or uncertain step.
 - **Any phase → Research Record** only when the user explicitly asks to remember, record, archive, save, or write the result.
 
 ## Agent Output Contracts

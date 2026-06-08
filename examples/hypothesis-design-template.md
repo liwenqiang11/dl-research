@@ -239,4 +239,4 @@ Ablation branch base:
   - Partially solved:
   - Unresolved:
   - Needs more evidence:
-- Restart point if unresolved: Problem / Evidence Pack / Diagnosis / Debate Brainstorming
+- Restart point if unresolved: Problem / Evidence Pack / Diagnosis / Deep Research Brainstorming

@@ -1,7 +1,7 @@
 ---
 name: dl-research
 description: Use this skill for deep learning algorithm research and experiment workflows: finding research problems, reading/comparing papers, forming hypotheses, designing models/losses/training protocols, implementing experiments, running sanity checks, diagnosing training logs, planning baselines/ablations, analyzing results, or tuning after a failure diagnosis. Always use for ML/DL research tasks involving Discovery, Design, or Evidence, even when the user only says "run training", "analyze loss", "design an experiment", "write an architecture", "compare baselines", or "debug a model".
-version: 0.3.0
+version: 0.4.0
 ---
 
 # Deep Learning Experimental Research Framework
@@ -19,7 +19,7 @@ Every substantive research response must begin with:
 ```
 当前流程：第 X 步 - [task summary]
 当前循环层级：微循环 / 内循环迭代 N / 外循环迭代 M
-当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Debate Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
+当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Deep Research Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
 阶段门控：passed / required / blocked / not-applicable
 门控触发原因：objective-fact / formal-claim / evidence-chain-claim / action-request / training-run / user-memory-request / none
 ```
@@ -91,7 +91,7 @@ If the user provides `/goal`, `Goal:`, or `目标：` text, parse these three fi
 ## Problem-Solving Loop
 
 ```
-Problem → Evidence Pack → Atomic Fact Verification → Formal Derivation Verification → Independent Evidence Audit → Debate Brainstorming → Mechanistic Analysis → Atomic Fact Verification → Formal Derivation Verification → Diagnosis → Pre-Action Compliance → Branch Plan → Implementation → Verification → Atomic Fact Verification → Formal Derivation Verification → Independent Evidence Audit → Resolution Decision → Research Record
+Problem → Evidence Pack → Atomic Fact Verification → Formal Derivation Verification → Independent Evidence Audit → Deep Research Brainstorming → Mechanistic Analysis → Atomic Fact Verification → Formal Derivation Verification → Diagnosis → Pre-Action Compliance → Branch Plan → Implementation → Verification → Atomic Fact Verification → Formal Derivation Verification → Independent Evidence Audit → Resolution Decision → Research Record
    ↑                                                                                                                                                                                         |
    └──────────────────────── unresolved / insufficient evidence / invalid problem ────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -107,7 +107,7 @@ This loop is the primary behavior. The agent execution states implement it:
 | Independent Evidence Audit | Gather, Verify | Ask an independent Evidence Auditor to audit whether verified facts form a traceable, reproducible, comparable, contradiction-aware evidence chain strong enough for the claim. |
 | Mechanistic Analysis | Gather, Route, Verify | Analyze the task, data signal, architecture, loss, optimization dynamics, code path, and causal root causes behind the observed behavior. |
 | Diagnosis | Route | Decide the problem type and competing causes. |
-| Debate Brainstorming | Act, Verify | Multiple Advocates independently propose solutions from different perspectives, attack each other's proposals, revise under pressure, and a Judge synthesizes the verdict. |
+| Deep Research Brainstorming | Act, Verify | 4 Researchers gather new knowledge (literature, codebase, failures, tools), map the full solution space, deeply evaluate each candidate, cross-examine from different angles, and a Judge synthesizes the verdict. |
 | Pre-Action Compliance | Act, Verify | Block research edits, config changes, training launches, or high-impact commands until required gates and branch records exist. |
 | Branch Plan | Act, Record | Define the Git branch, base commit, allowed change scope, and rollback point for research code changes. |
 | Implementation | Act | Execute the selected smallest useful step allowed by the current gate. |
@@ -124,7 +124,7 @@ Discovery → Design → Evidence
 | Research Phase | Goal | Agent Route | Required Output |
 |----------------|------|-------------|-----------------|
 | Discovery | Find the problem, normalize evidence, diagnose the bottleneck, form a falsifiable hypothesis | Problem → Evidence Pack → Diagnosis → Record | Problem statement, evidence pack, diagnosis, core hypothesis |
-| Design | Generate and select a solution strategy, then define algorithm and experiment protocol | Debate Brainstorming → Verification plan → Record | Debate verdict, selected strategy, algorithm design, experiment protocol |
+| Design | Generate and select a solution strategy, then define algorithm and experiment protocol | Deep Research Brainstorming → Verification plan → Record | Debate verdict, selected strategy, algorithm design, experiment protocol |
 | Evidence | Implement, train, actively monitor, run main/ablation experiments, verify resolution, and decide next state | Implementation → Active Monitoring Loop → Verification → Resolution Decision → Record | Sanity evidence, monitoring records, experiment results, ablation analysis, resolution decision |
 
 | Loop Type | Entry | Exit | Granularity | Max Iterations |
@@ -141,8 +141,8 @@ Discovery → Design → Evidence
 - Read `references/probe-toolkit.md` when the task asks for analysis probes, visualization, interpretability, gradient checks, or training diagnostics.
 - Read `references/atomic-fact-verification.md` whenever any objective factual claim is produced or used by any role, phase, report, diagnosis, design, run analysis, or final record.
 - Read `references/formal-derivation-verifier.md` whenever any role makes mathematical, gradient, loss/objective, variable-dependency, mechanism, equivalence, or commit-message claims.
-- Read `references/evidence-reviewer.md` whenever an independent evidence audit is needed before Diagnosis, Debate Brainstorming, Resolution Decision, or Record.
-- Read `references/debate-brainstorming.md` whenever the problem is not mechanically obvious and multiple competing solutions or root causes exist. This replaces single-agent Solution Generation with a multi-Advocate debate protocol.
+- Read `references/evidence-reviewer.md` whenever an independent evidence audit is needed before Diagnosis, Deep Research Brainstorming, Resolution Decision, or Record.
+- Read `references/debate-brainstorming.md` whenever the problem is not mechanically obvious and multiple competing solutions or root causes exist. This implements Deep Research Brainstorming: 5-phase structured research with knowledge gathering, solution space mapping, deep evaluation, cross-examination, and synthesis.
 - Read `references/git-branch-management.md` whenever code, config, data processing, evaluation logic, baselines, ablations, or training protocols may change.
 - Read `references/mechanistic-model-analyst.md` whenever the task involves model architecture, loss functions, training failures, metric conflicts, ablation interpretation, probe conflicts, or code-path consistency.
 - Read `references/research-recorder.md` only when the user explicitly asks to remember, record, save, archive, or write the current research result.
@@ -177,11 +177,11 @@ For every deep learning research task, run this state machine automatically. The
 - Do not jump from problem to action. Always pass through Evidence and Diagnosis unless the user explicitly requests a narrow mechanical edit.
 - Evidence must be normalized into an evidence pack before conclusions: facts, artifacts, assumptions, missing evidence, contradictions, and confidence.
 - Use the current stage to dispatch audit gates automatically. Do not wait for the user to ask for review when objective facts, formal/mechanism claims, evidence-chain claims, or action requests appear.
-- Run Atomic Fact Verification for every objective factual claim from every role and every phase before the claim is used for Independent Evidence Audit, Mechanistic Analysis, Diagnosis, Debate Brainstorming, Resolution Decision, or Record.
+- Run Atomic Fact Verification for every objective factual claim from every role and every phase before the claim is used for Independent Evidence Audit, Mechanistic Analysis, Diagnosis, Deep Research Brainstorming, Resolution Decision, or Record.
 - If the user challenges, corrects, or asks whether a previous factual claim is wrong, immediately switch to `Atomic Fact Verification`. A source lookup such as `grep`, `cat`, log inspection, or a Python check is not sufficient by itself; the response must include an Atomic Fact Verification table that marks the prior claim and the corrected claim separately.
 - When a challenged fact is false or insufficiently supported, explicitly deprecate the prior claim and block or revise any downstream conclusion, recommendation, or next action that depended on it. If the prior claim supported a diagnosis, design, result verdict, or recommendation, run Independent Evidence Audit again after the corrected fact table.
-- Run Formal Derivation Verification for every mathematical, gradient, objective, variable-dependency, equivalence, or mechanism claim before the claim is used for Independent Evidence Audit, Mechanistic Analysis, Diagnosis, Debate Brainstorming, commit messages, Resolution Decision, or Record.
-- Run an Independent Evidence Auditor audit after Atomic Fact Verification and before Diagnosis, Debate Brainstorming, Resolution Decision, or Record whenever the next step depends on collected evidence.
+- Run Formal Derivation Verification for every mathematical, gradient, objective, variable-dependency, equivalence, or mechanism claim before the claim is used for Independent Evidence Audit, Mechanistic Analysis, Diagnosis, Deep Research Brainstorming, commit messages, Resolution Decision, or Record.
+- Run an Independent Evidence Auditor audit after Atomic Fact Verification and before Diagnosis, Deep Research Brainstorming, Resolution Decision, or Record whenever the next step depends on collected evidence.
 - The audit verdict must be `pass` or clearly bounded `conditional-pass` before strong claims proceed. `fail` or `insufficient-evidence` returns to Evidence Pack, Atomic Fact Verification, Formal Derivation Verification, or targeted evidence gathering.
 - Run Mechanistic Model Analysis before blaming or changing model architecture, loss, training dynamics, metrics, probes, or implementation logic. It must explain underlying causal mechanisms and competing root causes, not only surface symptoms.
 - Diagnose the problem type before choosing a strategy: data, preprocessing, model capacity, architecture mismatch, loss/objective, optimization, decoding/inference, metric/evaluation, logging/artifact, reproducibility, literature/baseline gap, or invalid research hypothesis.
@@ -212,7 +212,7 @@ Atomic Fact Verification and Formal Derivation Verification must run as independ
 
 **Parallelism:**
 - Fact Verifier and Derivation Verifier can run in parallel (spawn both Agent calls in the same turn).
-- Debate Brainstorming Round 1 can also run in parallel with both verifiers.
+- Deep Research Brainstorming Round 1 can also run in parallel with both verifiers.
 - Independent Evidence Auditor must wait for both verifiers to complete before starting.
 
 **When the Agent tool is unavailable:**
@@ -228,7 +228,7 @@ Every substantive response must identify `当前阶段`, `阶段门控`, and `�
 | User factual challenge / correction | Switch to Atomic Fact Verification; verify the prior claim and corrected claim in the required table; revise or block dependent conclusions |
 | Mechanistic Analysis | Default gate status is `required`. Objective facts → Atomic Fact Verification; mathematical/mechanism/design-rationale claims → Formal Derivation Verification; insufficient static evidence → needs-probe or needs-runtime-check |
 | Diagnosis | Requires prior Atomic Fact Verification and Formal Derivation Verification where applicable; diagnosis claims → Independent Evidence Audit |
-| Design / Debate Brainstorming | Design rationale facts → Atomic; formal mechanism claims → Formal; debate candidate evidence claims → Independent Evidence Audit before selected strategy is finalized |
+| Design / Deep Research Brainstorming | Design rationale facts → Atomic; formal mechanism claims → Formal; debate candidate evidence claims → Independent Evidence Audit before selected strategy is finalized |
 | Pre-Action Compliance / Branch Plan | Action request → Pre-Action Compliance; research edit → Branch Plan |
 | Implementation | Must pass Pre-Action Compliance and Branch Plan before edits |
 | Verification / Result Analysis | Result facts → Atomic; result mechanisms → Formal; result conclusions → Independent Evidence Audit |
@@ -237,7 +237,7 @@ Every substantive response must identify `当前阶段`, `阶段门控`, and `�
 
 ## Independent Evidence Auditor Gate
 
-Before Diagnosis, Debate Brainstorming, Resolution Decision, or Research Record, the main agent must use an independent Evidence Auditor whenever the next step depends on collected evidence. The main agent prepares an Audit Packet and stops downstream reasoning until the auditor returns a verdict.
+Before Diagnosis, Deep Research Brainstorming, Resolution Decision, or Research Record, the main agent must use an independent Evidence Auditor whenever the next step depends on collected evidence. The main agent prepares an Audit Packet and stops downstream reasoning until the auditor returns a verdict.
 
 When an independent agent/subagent mechanism is available, the Evidence Auditor must run in a separate context. If no independent reviewer mechanism is available, the main agent must mark the audit as `non-independent`, explain the limitation, and downgrade any conclusion that depends on the audit unless the user explicitly accepts the limitation.
 
@@ -288,7 +288,7 @@ Do not free-form answer with only "key findings", "bottleneck", "recommendation"
 ```markdown
 当前流程：第 X 步 - [task summary]
 当前循环层级：微循环 / 内循环迭代 N / 外循环迭代 M
-当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Debate Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
+当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Deep Research Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
 阶段门控：passed / required / blocked / not-applicable
 门控触发原因：objective-fact / formal-claim / evidence-chain-claim / action-request / training-run / user-memory-request / none
 
@@ -387,18 +387,19 @@ Run this check before file edits, config changes, branch changes, training launc
 
 If any item is missing, stop before acting and create the missing record. If an action already happened without this gate, open a Branch Noncompliance Incident and downgrade reproducibility until the state is recorded.
 
-## Debate Brainstorming Rules
+## Deep Research Brainstorming Rules
 
-Use Debate Brainstorming instead of single-agent Solution Generation when the problem is not mechanically obvious. Read `references/debate-brainstorming.md` for the full protocol.
+Use Deep Research Brainstorming instead of shallow debate or single-agent Solution Generation when the problem is not mechanically obvious. Read `references/debate-brainstorming.md` for the full protocol.
 
-- Run Debate Brainstorming after Independent Evidence Audit and before Mechanistic Analysis.
-- Assign 4 Advocates (data, model, loss, evaluation perspectives), not predetermined positions.
-- Run 3 rounds: Independent Exploration → Cross-Attack → Revise. Each round runs Advocates in parallel.
-- A Judge synthesizes the final verdict: convergence analysis, survivability ranking, fusion proposal, unresolved disputes.
-- If multiple perspectives converge, proceed with high confidence.
-- If perspectives diverge, design a minimal discriminating experiment before choosing.
-- On outer-loop restart, include previous debate conclusions and failed attempts as evidence to prevent cycling.
-- Do not implement until the Judge verdict is complete and the required gate is passed.
+- Run Deep Research Brainstorming after Independent Evidence Audit and before Mechanistic Analysis.
+- Phase 1 (Knowledge Gathering): 4 Researchers in parallel — Literature Survey, Codebase Audit, Failure Analysis, Tool/Tech Landscape. Each actively gathers NEW knowledge using available tools.
+- Phase 2 (Solution Space Mapping): Each Researcher proposes multiple directions (not just one). Dedup and merge into unified Solution Space Map.
+- Phase 3 (Deep Evaluation): Each candidate gets rigorous analysis — mechanism derivation, evidence anchoring, cost estimation, verification design, devil's advocate.
+- Phase 4 (Cross-Examination): Each Researcher reviews others' candidates from their professional perspective.
+- Phase 5 (Synthesis): Judge produces Research Verdict — top-3 ranking, fusion proposal, knowledge gained, discriminating experiments, unresolved disputes.
+- Total: 17-19 Agent calls, 5 parallel batches.
+- On outer-loop restart, Failure Analysis Researcher receives ALL previous attempts to prevent cycling.
+- Do not implement until the Research Verdict is complete and the required gate is passed.
 
 ## Resolution Rules
 
@@ -457,7 +458,7 @@ Default Active Monitoring thresholds apply unless the Monitoring Plan overrides 
 - **Mechanistic Analysis Gate**: Automatically required before model/loss/protocol design, training-failure diagnosis, ablation interpretation, probe-conflict interpretation, or code-path mechanism claims. The report must state candidate root causes and the smallest discriminating test when evidence is insufficient.
 - **Branch Creation Gate**: Required before implementing research code changes. Define the Git branch plan and scope. In guided or strict-confirmation modes, ask before creating or switching branches.
 - **Sanity Gate**: Required before trusting full training. At minimum, verify tensor shapes, device placement, finite loss, gradient flow, and tiny-batch overfit or an equivalent task-specific check. In `full-auto`, the agent may proceed without user confirmation but must still perform or record the sanity evidence.
-- **Independent Evidence Audit Gate**: Automatically required after Atomic Fact Verification and before Diagnosis, Debate Brainstorming, Resolution Decision, or Record when the step depends on evidence. Use an independent Evidence Auditor whenever an independent reviewer mechanism is available. The auditor receives only the Audit Packet, verifies evidence-chain support, traceability, reproducibility, baseline comparability, contradictions, assumptions, and allowed conclusion strength, and returns a verdict that the main agent cannot upgrade or reinterpret.
+- **Independent Evidence Audit Gate**: Automatically required after Atomic Fact Verification and before Diagnosis, Deep Research Brainstorming, Resolution Decision, or Record when the step depends on evidence. Use an independent Evidence Auditor whenever an independent reviewer mechanism is available. The auditor receives only the Audit Packet, verifies evidence-chain support, traceability, reproducibility, baseline comparability, contradictions, assumptions, and allowed conclusion strength, and returns a verdict that the main agent cannot upgrade or reinterpret.
 - **Run Gate**: Required before launching long, expensive, destructive, or externally visible jobs, unless `full-auto` mode is active and higher-priority permission rules allow the run.
 - **Resolution Decision Gate**: Required after each experiment or failed run. In `full-auto`, the agent may make the resolution decision without user confirmation, but must record the status and restart point.
 - **Research Record Gate**: Triggered only when the user explicitly asks to remember, record, save, archive, or write a research result. First draft the Research Record in template format, then wait for user confirmation before writing to any memory file.
@@ -503,7 +504,7 @@ The agent should automatically:
 - define the experimental protocol: datasets, splits, preprocessing, augmentations, metrics, seeds, compute assumptions, and artifacts;
 - design fair comparisons: baselines, controls, and one-factor-at-a-time ablations;
 - choose the strategy: minimal intervention, controlled variant, or deeper redesign, and state why;
-- run Debate Brainstorming to generate, attack, and compare candidate solutions before choosing the strategy;
+- run Deep Research Brainstorming to generate, attack, and compare candidate solutions before choosing the strategy;
 - predict failure modes and diagnostics;
 - stop at Design Gate before implementation when the design changes core behavior.
 

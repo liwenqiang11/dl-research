@@ -1,10 +1,10 @@
-# Debate Brainstorming
+# Deep Research Brainstorming
 
-Use Debate Brainstorming after evidence is gathered and verified, before Diagnosis. Instead of a single agent generating solutions, multiple Advocates independently find solutions from different perspectives, attack each other's proposals, revise under pressure, and a Judge synthesizes the result.
+Deep Research Brainstorming replaces shallow debate with structured research. Instead of 4 agents each proposing one solution and arguing, 4 Researchers actively gather new knowledge (literature, codebase, failures, tools), map the full solution space, deeply evaluate each candidate, cross-examine from different angles, and synthesize the best result.
 
 ## When to Trigger
 
-Trigger Debate Brainstorming when:
+Trigger Deep Research Brainstorming when:
 
 - Diagnosis is not yet settled and multiple plausible paths exist;
 - The problem has multiple competing root causes;
@@ -12,7 +12,7 @@ Trigger Debate Brainstorming when:
 - After an outer-loop restart when previous solutions failed;
 - When the task is non-trivial and a single-perspective solution risks fixation.
 
-Skip Debate Brainstorming when:
+Skip when:
 
 - The problem is mechanically obvious (single clear fix);
 - The user has already specified the exact solution;
@@ -20,216 +20,297 @@ Skip Debate Brainstorming when:
 
 ## Core Principle
 
-Do not assign positions. Assign perspectives.
+Research first, decide second. Every proposal must be grounded in knowledge gathered during this phase, not just reasoning from existing evidence.
 
-Each Advocate receives the same evidence pack and independently finds what they believe is the best solution, viewed through their assigned lens. Convergence across perspectives is a strong signal. Divergence identifies where experiments are needed.
+## Five Phases
 
-## Perspective Lenses
-
-| Advocate | Lens | Core Questions |
-|----------|------|----------------|
-| Data | Labels, distributions, splits, preprocessing, augmentation, leakage, sampling, noise | Are labels correct? Is the split clean? Could noise/imbalance/shift explain the behavior? |
-| Model | Capacity, receptive field, normalization, feature fusion, inductive bias, expressivity | Can the architecture represent the mapping? Is the receptive field sufficient? Are there dead modules? |
-| Loss | Objective alignment, gradient signal, term interaction, numerical stability, metric alignment | Does the objective produce the right gradients? Are terms competing? Is the optimized objective aligned with the metric? |
-| Evaluation | Metric definition, decoding, postprocessing, baseline fairness, protocol reproducibility | Does the metric measure what we care about? Are baselines compared fairly? Could metric gaming explain the observation? |
-
-## Debate Structure
-
-### Round 1 — Independent Exploration (parallel)
-
-Each Advocate analyzes the evidence pack through their lens and produces a complete proposal.
-
-```markdown
-## Advocate [Perspective] — Round 1 Proposal
-
-### Problem Diagnosis (lens)
-[Core problem from this perspective]
-
-### Proposed Solution
-[Concrete, actionable]
-
-### Core Hypothesis
-[One-sentence falsifiable claim]
-
-### Evidence Support
-- Supporting verified facts: [Fact IDs]
-- Contradicting verified facts: [Fact IDs]
-- Indeterminate facts: [Fact IDs]
-
-### Mechanism
-[Causal chain from proposed change to metric improvement]
-
-### Implementation
-- What to change:
-- Minimum viable change:
-- Cost:
-
-### Verification Signal
-- Success:
-- Failure:
-- Smallest test:
-
-### Risks & Rollback
-- Main risk:
-- Rollback path:
+```
+Phase 1: Knowledge Gathering (4 Researchers, parallel)
+  → Phase 2: Solution Space Mapping (4 Researchers, parallel, then dedup)
+    → Phase 3: Deep Evaluation (parallel, one per candidate)
+      → Phase 4: Cross-Examination (4 Researchers, parallel)
+        → Phase 5: Synthesis (Judge, 1 call)
 ```
 
-### Round 2 — Cross-Attack (parallel)
+## Phase 1: Knowledge Gathering
 
-Each Advocate reads the other Advocates' Round 1 proposals and attacks each one.
+4 Researchers, each with a distinct research strategy, gather new knowledge in parallel. Each uses the tools available to them (web search, code reading, log analysis, etc.).
 
-```markdown
-## Advocate [Perspective] — Attacks
+| Researcher | Strategy | What They Do | Tools |
+|---|---|---|---|
+| Literature Survey | Find known solutions | Search papers, blogs, open-source projects. Compare baselines. Find SOTA. | WebSearch, WebFetch |
+| Codebase Audit | Understand current implementation | Read core code. Find bottlenecks, hidden assumptions, code debt. Trace data flow. | Read, Grep, Glob |
+| Failure Analysis | Learn from failures | Analyze all previous failed attempts. Extract lessons. Identify repeated patterns. | Read (logs, history, records) |
+| Tool/Tech Landscape | Find available tools | Research relevant libraries, frameworks, techniques. Assess maturity and fit. | WebSearch, WebFetch |
 
-### On Advocate [Other]
-- **Core weakness**: [single most damaging flaw]
-- **Lens blind spot**: [what they missed by not using this perspective]
-- **Fatal flaw under scrutiny**: [why their proposal fails from this angle]
-- **Evidence gap**: [weak or unverifiable claims]
+### Researcher Prompt Template
+
+```
+Agent(
+  description="Research Brainstorming: {strategy_name}",
+  prompt="""
+You are a Researcher in a Deep Research Brainstorming session. Your strategy is: {strategy_name}.
+
+## Problem Statement
+{problem_statement}
+
+## Evidence Pack (already verified)
+{evidence_pack}
+
+## Your Task
+{strategy_specific_instructions}
+
+## Instructions
+1. Actively gather NEW knowledge using the tools available to you.
+2. For each finding, record: source, relevance, key insight, and confidence level.
+3. Do NOT propose solutions yet — just gather and organize knowledge.
+4. Be thorough but focused on the problem at hand.
+5. Cite specific sources (paper titles, file paths, URLs, log lines).
+
+## Output Format
+
+### Findings
+| # | Source | Finding | Relevance | Key Insight | Confidence |
+|---|--------|---------|-----------|-------------|------------|
+
+### Summary
+[2-3 sentence synthesis of the most important findings]
+
+### Knowledge Gaps
+[What you couldn't find or verify that would be important]
+"""
+)
 ```
 
-Rules:
-- Attack the strongest part of the argument, not the weakest.
-- Be precise. Cite specific evidence or logical flaws.
-- Do not attack straw men.
+### Strategy-Specific Instructions
 
-### Round 3 — Revise (parallel)
-
-Each Advocate reads attacks on their own proposal and produces a final revised version.
-
-```markdown
-## Advocate [Perspective] — Final Revised Proposal
-
-### Attacks Received
-- From [Other]: [summary]
-
-### Concessions (attacks that stand)
-[Valid criticisms and what was修正]
-
-### Rebuttals (attacks that fail)
-[Invalid criticisms and why]
-
-### What I Learned
-[Good ideas absorbed from other proposals]
-
-### Final Proposal
-[Revised solution incorporating valid criticisms and useful ideas]
-
-### Remaining Weakness
-[What is still uncertain or risky]
+**Literature Survey:**
+```
+- Search for papers, blog posts, and open-source projects related to: {problem_keywords}
+- For each relevant method: what problem does it solve, what mechanism does it use, what are its limitations?
+- Compare against the current baseline approach.
+- Look for: loss functions, architectures, training tricks, evaluation methods.
 ```
 
-Rules:
-- If an attack stands, concede. Do not defend for the sake of defending.
-- Learn from others. If their idea is better, absorb it.
-- Be honest about remaining weaknesses.
+**Codebase Audit:**
+```
+- Read the core implementation files: {relevant_files}
+- Identify: data flow, model architecture, loss computation, optimizer, evaluation logic.
+- Find: hardcoded assumptions, magic numbers, commented-out experiments, TODO comments.
+- Trace: how does a batch of data flow from input to loss to gradient?
+- Look for: potential bottlenecks, unused code, inconsistent implementations.
+```
 
-## Judge
+**Failure Analysis:**
+```
+- Review all previous experiment logs, history, and records in: {experiment_dirs}
+- For each failed attempt: what was tried, what happened, why did it fail?
+- Identify patterns: do failures cluster around a specific mechanism?
+- Extract lessons: what should NOT be tried again, and what might work with modification?
+- Check: are there experiments that were started but never completed? Why?
+```
 
-After all 3 rounds, the Judge reads the complete debate record and synthesizes a verdict.
+**Tool/Tech Landscape:**
+```
+- Search for libraries and tools that could help with: {problem_description}
+- For each tool: maturity, active maintenance, API quality, compatibility with current stack.
+- Look for: existing implementations of proposed methods, pretrained models, benchmark results.
+- Assess: would using this tool be faster than implementing from scratch?
+```
+
+## Phase 2: Solution Space Mapping
+
+Each Researcher reads the Knowledge Base (all Phase 1 outputs) and maps out ALL viable directions from their perspective.
+
+### Output Format
+
+```markdown
+## Solution Space Map
+
+### Direction A: [Name]
+- **Core hypothesis**: One-sentence falsifiable claim
+- **Source**: Where this idea comes from (paper/code/failure lesson)
+- **Mechanism**: Causal chain from change to improvement
+- **Evidence**: What supports this
+- **Cost**: Implementation effort, training time, risk
+- **Type**: proven / adapted / exploratory
+
+### Direction B: [Name]
+...
+
+### Direction C: [Name]
+...
+```
+
+Each Researcher must propose **at least 2 directions**, not just one. The goal is breadth, not commitment to a single idea.
+
+### Dedup and Merge
+
+After Phase 2, a dedup step merges overlapping directions from different Researchers and keeps independent ones. Output: a unified Solution Space Map with unique candidate directions.
+
+## Phase 3: Deep Evaluation
+
+Each candidate direction is assigned to the most qualified Researcher for deep evaluation. This is not a surface-level description — it is a rigorous analysis.
+
+### Output Format
+
+```markdown
+## Deep Evaluation: [Direction Name]
+
+### Mechanism Derivation
+[Complete causal chain from input to output. Not a qualitative description — a derivation.]
+
+### Evidence Anchoring
+| Claim | Source | Verified | Strength |
+|-------|--------|----------|----------|
+| [claim] | [paper/code/experiment] | true/false/unverifiable | strong/moderate/weak |
+
+### Cost Estimation
+- **Implementation**: [scope, file count, estimated effort]
+- **Training**: [GPU hours, memory, data requirements]
+- **Risk**: [probability of failure, rollback difficulty]
+- **Dependencies**: [external libraries, data, compute]
+
+### Verification Design
+- **Smallest discriminating experiment**: [specific steps]
+- **Success signal**: [metric threshold or behavior]
+- **Failure signal**: [metric threshold or behavior]
+- **Estimated time to verify**: [hours/days]
+
+### Devil's Advocate
+[Why might this fail? What is the weakest link? What assumption is most likely wrong?]
+```
+
+## Phase 4: Cross-Examination
+
+Each Researcher reviews the other Researchers' top candidates from their professional perspective.
+
+### Output Format
+
+```markdown
+## Cross-Examination
+
+### On [Direction X] (evaluated by Researcher Y)
+- **From Literature perspective**: [What do papers say about this approach's limitations?]
+- **From Codebase perspective**: [Can the current code support this? What needs to change?]
+- **From Failure perspective**: [How is this different from previous failed attempts?]
+- **From Tool perspective**: [Is there a ready-made implementation? Is it better to build or buy?]
+
+### Verdict on [Direction X]
+- Strengths that survive scrutiny:
+- Weaknesses exposed:
+- Conditions for viability:
+```
+
+## Phase 5: Synthesis
+
+The Judge reads all research artifacts and produces the final verdict.
 
 ### Judge Input
 
-- Full debate record (all 3 rounds, all Advocates)
-- Original evidence pack
+- Phase 1 Knowledge Base (all 4 Researchers' findings)
+- Phase 2 Solution Space Map (deduped)
+- Phase 3 Deep Evaluations
+- Phase 4 Cross-Examination results
+- Original Evidence Pack
 - Atomic Fact Verification table
-- Formal Derivation Verification report (if applicable)
+- Formal Derivation Verification report
 
-### Judge Analysis
+### Output Format
 
 ```markdown
-## Debate Verdict
+## Research Verdict
 
-### Convergence Analysis
-- Convergent points: [what multiple Advocates independently agree on]
-- Divergent points: [fundamental disagreements]
-- Partial overlap: [partially shared ideas]
+### Solution Space Overview
+- Total directions explored: N
+- Literature-backed: X
+- Adapted from prior work: Y
+- Purely exploratory: Z
+- Previously failed (with modification): W
 
-### Survivability Ranking
-| Rank | Advocate | Perspective | Core Proposal | Attack Survivability | Evidence Support | Mechanism Strength |
-|------|----------|-------------|---------------|---------------------|-----------------|-------------------|
-| 1    |          |             |               |                     |                 |                   |
-| 2    |          |             |               |                     |                 |                   |
-| 3    |          |             |               |                     |                 |                   |
-| 4    |          |             |               |                     |                 |                   |
+### Top-3 Candidates
+| Rank | Direction | Evidence | Mechanism | Cost | Survivability | Verification Time |
+|------|-----------|----------|-----------|------|---------------|-------------------|
+| 1 | | | | | | |
+| 2 | | | | | | |
+| 3 | | | | | | |
 
 ### Fusion Proposal (if applicable)
-- From Advocate [X]: [specific contribution]
-- From Advocate [Y]: [specific contribution]
+- From [Direction X]: [specific contribution]
+- From [Direction Y]: [specific contribution]
 - Combined: [fused solution]
+- Why fusion is better than either alone:
+
+### Knowledge Gained (for Evidence Pack)
+- New verified facts:
+- New methods identified:
+- New tools available:
+- Failure patterns confirmed:
+
+### Discriminating Experiments (priority-ordered)
+| Priority | Experiment | Cost | Discriminates | Expected Result |
+|----------|-----------|------|---------------|-----------------|
+| 1 | | | | |
+| 2 | | | | |
+| 3 | | | | |
 
 ### Unresolved Disputes
-[Disagreements that require experiments to resolve]
-[Minimal discriminating experiment design for each]
+[What evidence would resolve each dispute]
 
 ### Final Recommendation
-- Primary solution: [description]
-- Fallback: [if primary fails]
-- Restart point: [where to re-enter if this fails]
-```
-
-### Judge Evaluation Dimensions
-
-| Dimension | Description |
-|-----------|-------------|
-| Evidence Anchoring | How many supporting facts are verified `true`? |
-| Attack Survivability | Does the core argument hold after cross-examination? |
-| Mechanism Strength | Is the causal chain complete and falsifiable? |
-| Verifiability | Can a minimal discriminating experiment be designed? |
-| Implementation Cost | Scope of change, training time, risk |
-| Reversibility | Can we roll back if it fails? |
-| Innovation Value | Does it bring new mechanistic understanding? |
-
-### Convergence Handling
-
-| Scenario | Interpretation | Action |
-|----------|---------------|--------|
-| Multiple perspectives converge on same solution | Strong signal — independent reasoning agrees | High confidence; proceed to Mechanistic Analysis |
-| Perspectives diverge but solutions are complementary | Solutions address different aspects | Judge proposes fusion; verify each part |
-| Perspectives fundamentally oppose each other | Core disagreement requires experiment | Design minimal discriminating experiment; run it; re-enter debate with new evidence |
-| All perspectives agree on diagnosis but propose different fixes | Diagnosis is settled; fix strategy is not | Run fixes in order of evidence strength |
-
-## Integration with Workflow
-
-```
-Evidence Pack
-  → Atomic Fact Verification
-  → Formal Derivation Verification
-  → Independent Evidence Audit
-  → Debate Brainstorming              ← replaces Solution Generation + Selection
-    → Round 1: Independent Exploration (parallel)
-    → Round 2: Cross-Attack (parallel)
-    → Round 3: Revise (parallel)
-    → Judge: Synthesize verdict
-  → Mechanistic Analysis (on winning/fused solution)
-  → Diagnosis (settled by debate + mechanism analysis)
-  → Pre-Action Compliance
-  → Branch Plan
-  → Implementation
-  → ...
+- **Primary**: [direction with highest confidence]
+- **Fallback**: [direction if primary fails]
+- **Restart point**: [where to re-enter if both fail]
 ```
 
 ## Agent Execution
 
-Debate Brainstorming runs as parallel Agent calls:
+Deep Research Brainstorming runs as parallel Agent calls:
 
 ```
-Round 1: 4 Agent calls in parallel (one per Advocate)
-Round 2: 4 Agent calls in parallel (each reads Round 1 results)
-Round 3: 4 Agent calls in parallel (each reads Round 2 attacks)
-Judge:   1 Agent call (reads all debate record)
-Total:   13 Agent calls, 4 parallel batches
+Phase 1: 4 Agent calls in parallel (one per Researcher strategy)
+Phase 2: 4 Agent calls in parallel (each reads all Phase 1 outputs)
+Phase 3: 4-6 Agent calls in parallel (one per candidate direction)
+Phase 4: 4 Agent calls in parallel (each reviews others' evaluations)
+Phase 5: 1 Agent call (Judge reads everything)
+Total: 17-19 Agent calls, 5 parallel batches
 ```
 
-Each Advocate is an independent Agent with its own context. They do not share state except through the debate artifacts (proposals, attacks, revisions).
+Each Researcher is an independent Agent with its own context. They share knowledge only through the Knowledge Base artifact (Phase 1 outputs).
 
-The Judge is a separate Agent that reads only the debate record and evidence pack. It does not participate in the debate.
+The Judge is a separate Agent that reads all research artifacts. It does not participate in the research.
 
 ## Outer-Loop Restart
 
-When a previous solution fails and the workflow restarts from Problem or Evidence Pack:
+When a previous solution fails and the workflow restarts:
 
-- The debate is re-run with updated evidence (including what was learned from the failed attempt);
-- Previous debate conclusions are included as additional evidence;
-- Advocates are explicitly told: "Previous attempt X failed because Y. Do not repeat it.";
-- This prevents cycling through the same solutions.
+- Phase 1 Failure Analysis Researcher receives ALL previous attempts as input:
+  - What was tried
+  - What happened
+  - Why it failed
+  - What evidence was generated
+- This prevents cycling through the same solutions
+- Other Researchers also receive the failure summary to avoid repeating known dead ends
+
+## Token Budget Control
+
+Each Researcher's output should be bounded:
+- Phase 1: ≤ 3000 tokens per Researcher
+- Phase 2: ≤ 2000 tokens per Researcher (max 5 directions)
+- Phase 3: ≤ 2000 tokens per evaluation
+- Phase 4: ≤ 1500 tokens per Researcher
+- Phase 5: ≤ 3000 tokens for Judge
+
+Total estimated: ~50k-70k tokens per brainstorming session.
+
+## Comparison with Old Debate
+
+| Dimension | Old Debate | Deep Research |
+|---|---|---|
+| Starting point | Existing Evidence Pack | Problem + active knowledge gathering |
+| Knowledge sources | Only existing facts | Literature + code + failures + tools |
+| Output per agent | 1 proposal | Full solution space map |
+| Depth | Fixed 3 rounds | Iterative, deep evaluation |
+| Evidence | Qualitative references | Structured evidence anchoring |
+| Cross-validation | Surface-level attacks | Professional cross-examination |
+| Deliverable | Ranked proposals | Ranked proposals + knowledge base + experiment plan |

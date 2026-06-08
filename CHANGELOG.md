@@ -2,6 +2,20 @@
 
 All notable changes to dl-research will be documented in this file.
 
+## [0.4.0] - 2026-06-04
+
+### Changed
+- **Deep Research Brainstorming** replaces shallow Debate Brainstorming
+  - 5-phase protocol: Knowledge Gathering → Solution Space Mapping → Deep Evaluation → Cross-Examination → Synthesis
+  - Phase 1: 4 Researchers (Literature Survey, Codebase Audit, Failure Analysis, Tool/Tech Landscape) actively gather NEW knowledge
+  - Phase 2: Each Researcher maps full solution space (≥2 directions), not just one proposal
+  - Phase 3: Deep evaluation per candidate — mechanism derivation, evidence anchoring, cost estimation, devil's advocate
+  - Phase 4: Professional cross-examination from each perspective
+  - Phase 5: Judge synthesizes — top-3 ranking, fusion, knowledge gained, discriminating experiments
+  - Total: 17-19 Agent calls, 5 parallel batches (vs old 13 calls, 4 batches)
+  - On outer-loop restart, Failure Analysis Researcher receives ALL previous attempts
+- All references unified from "Debate Brainstorming" to "Deep Research Brainstorming"
+
 ## [0.3.0] - 2026-06-04
 
 ### Added

@@ -152,7 +152,7 @@ Use one verdict:
 - **fail**: Evidence contradicts the claim, is not factual, is not comparable, or contains unresolved critical issues.
 - **insufficient-evidence**: Required artifacts are missing, so no reliable conclusion can be drawn yet.
 
-Only `pass` or a clearly bounded `conditional-pass` may proceed to Diagnosis, Debate Brainstorming, Resolution Decision, or Record. `fail` and `insufficient-evidence` must return to Atomic Fact Verification, Evidence Pack, or targeted evidence gathering.
+Only `pass` or a clearly bounded `conditional-pass` may proceed to Diagnosis, Deep Research Brainstorming, Resolution Decision, or Record. `fail` and `insufficient-evidence` must return to Atomic Fact Verification, Evidence Pack, or targeted evidence gathering.
 
 The main agent may proceed only according to the auditor verdict:
 

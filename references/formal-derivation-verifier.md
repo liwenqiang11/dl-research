@@ -240,7 +240,7 @@ Return ONLY the verification report. No other output.
 ### Parallelism
 
 - Derivation Verifier can run in parallel with Fact Verifier (spawn both Agent calls in the same turn).
-- Debate Brainstorming Round 1 can also run in parallel with both verifiers.
+- Deep Research Brainstorming Round 1 can also run in parallel with both verifiers.
 - Independent Evidence Auditor must wait for both verifiers to complete.
 
 ### Fallback

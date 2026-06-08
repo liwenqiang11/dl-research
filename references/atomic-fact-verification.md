@@ -49,7 +49,7 @@ The phase-gated dispatcher must trigger Atomic Fact Verification whenever any ob
 - Independent Evidence Audit;
 - Mechanistic Model Analyst Report;
 - Diagnosis;
-- Debate Brainstorming;
+- Deep Research Brainstorming;
 - Branch Plan or Run-to-Branch Binding;
 - Sanity, training, monitoring, result, ablation, or probe reports;
 - Resolution Decision;
@@ -129,7 +129,7 @@ Use exactly one verdict per factual claim:
 - `false`: Must be removed or corrected. Any conclusion depending on it is blocked.
 - `unverifiable`: Must not support diagnosis, design, or resolution. Gather evidence or downgrade to hypothesis.
 - `insufficient-source`: May support only weak exploratory notes if explicitly caveated; it cannot support strong claims.
-- `not-checked`: Must not proceed to Independent Evidence Audit, Diagnosis, Debate Brainstorming, Resolution Decision, or Record.
+- `not-checked`: Must not proceed to Independent Evidence Audit, Diagnosis, Deep Research Brainstorming, Resolution Decision, or Record.
 
 ## Claim Extraction Rules
 
@@ -237,7 +237,7 @@ Return ONLY the verdict table. No other output.
 ### Parallelism
 
 - Fact Verifier can run in parallel with Derivation Verifier (spawn both Agent calls in the same turn).
-- Debate Brainstorming Round 1 can also run in parallel with both verifiers.
+- Deep Research Brainstorming Round 1 can also run in parallel with both verifiers.
 - Independent Evidence Auditor must wait for both verifiers to complete.
 
 ### Fallback

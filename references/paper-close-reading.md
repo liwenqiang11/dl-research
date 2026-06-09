@@ -59,6 +59,12 @@ You are a Paper Screener. Quickly assess which papers are relevant to the diagno
 ## Papers to Screen
 {pdf_paths}
 
+## How to Read PDFs
+Use the Read tool to read each PDF:
+- Abstract + Introduction: `Read(file_path, pages="1-3")`
+- Conclusion + Results: `Read(file_path, pages="last 3-5 pages")` or read the last few pages
+- Do NOT read the full paper in this step
+
 ## Instructions
 For each paper, read ONLY: abstract, introduction (first 2 paragraphs), conclusion, and results tables.
 Do NOT read the full method section yet.
@@ -102,7 +108,16 @@ that can be applied to the diagnosed problem.
 {diagnosis}
 
 ## Paper
-{pdf_path_or_content}
+{pdf_path}
+
+## How to Read This PDF
+Use the Read tool to read the PDF in sections:
+- Abstract + Introduction + Related Work: `Read(file_path, pages="1-5")`
+- Method section: `Read(file_path, pages="5-10")` (adjust based on paper length)
+- Experiments + Results: `Read(file_path, pages="10-15")`
+- Conclusion: `Read(file_path, pages="last 2 pages")`
+- If the paper is longer, read in chunks of 5-10 pages as needed
+- Read the ENTIRE paper — do not skip sections
 
 ## Screening Notes
 {screening_result_for_this_paper}

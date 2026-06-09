@@ -1,7 +1,7 @@
 ---
 name: dl-research
 description: Use this skill for deep learning algorithm research and experiment workflows: finding research problems, reading/comparing papers, forming hypotheses, designing models/losses/training protocols, implementing experiments, running sanity checks, diagnosing training logs, planning baselines/ablations, analyzing results, or tuning after a failure diagnosis. Always use for ML/DL research tasks involving Discovery, Design, or Evidence, even when the user only says "run training", "analyze loss", "design an experiment", "write an architecture", "compare baselines", or "debug a model".
-version: 0.4.1
+version: 0.5.0
 ---
 
 # Deep Learning Experimental Research Framework
@@ -393,13 +393,11 @@ Use Deep Research Brainstorming after Diagnosis to find the best solution for th
 
 - Run Deep Research Brainstorming after Diagnosis and before Pre-Action Compliance.
 - The diagnosis provides the problem statement, root cause hypothesis, and success criteria that drive the research.
-- Phase 1 (Knowledge Gathering): 4 Researchers in parallel — Literature Survey, Codebase Audit, Failure Analysis, Tool/Tech Landscape. Each actively gathers NEW knowledge using available tools.
-- Phase 2 (Solution Space Mapping): Each Researcher proposes multiple directions (not just one). Dedup and merge into unified Solution Space Map.
-- Phase 3 (Deep Evaluation): Each candidate gets rigorous analysis — mechanism derivation, evidence anchoring, cost estimation, verification design, devil's advocate.
-- Phase 4 (Cross-Examination): Each Researcher reviews others' candidates from their professional perspective.
-- Phase 5 (Synthesis): Judge produces Research Verdict — top-3 ranking, fusion proposal, knowledge gained, discriminating experiments, unresolved disputes.
-- Total: 17-19 Agent calls, 5 parallel batches.
-- On outer-loop restart, Failure Analysis Researcher receives ALL previous attempts to prevent cycling.
+- Phase 1 (Research): 3 agents in parallel — External Research (WebSearch+WebFetch), Internal Audit (Read+Grep+Glob), Failure Analysis (Read history). Each gathers knowledge into a shared Knowledge Base.
+- Phase 2 (Propose + Evaluate): 1 agent reads Knowledge Base, proposes 3-5 candidates with mechanism derivation, evidence anchoring, cost, verification design, and Devil's Advocate.
+- Phase 3 (Adversarial Verify + Synthesize): 1 agent tries to REFUTE each candidate. Survivors get final ranking, fusion proposal, discriminating experiments.
+- Total: 5 agents, 3 batches, ~20k tokens.
+- On outer-loop restart, Failure Analysis receives ALL previous attempts to prevent cycling.
 - Do not implement until the Research Verdict is complete and the required gate is passed.
 
 ## Resolution Rules

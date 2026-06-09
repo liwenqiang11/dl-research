@@ -2,6 +2,16 @@
 
 All notable changes to dl-research will be documented in this file.
 
+## [0.5.0] - 2026-06-04
+
+### Changed
+- **Deep Research Brainstorming redesigned**: 5-phase → 3-phase, 17-19 agents → 5 agents
+  - Phase 1 (Research): 3 parallel agents — External Research (WebSearch), Internal Audit (Read), Failure Analysis (Read history)
+  - Phase 2 (Propose + Evaluate): 1 agent proposes 3-5 candidates with mechanism derivation, cost, verification design, Devil's Advocate
+  - Phase 3 (Adversarial Verify + Synthesize): 1 agent tries to REFUTE each candidate, survivors get final ranking
+  - Token budget: ~60k → ~20k
+  - External search now actually executes via WebSearch/WebFetch
+
 ## [0.4.1] - 2026-06-04
 
 ### Changed

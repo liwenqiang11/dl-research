@@ -120,7 +120,7 @@ Use this contract as the backbone of every Discovery, Design, or Evidence task.
 | Independent Evidence Audit | Do verified facts form an evidence chain that supports the claim? | Independent Evidence Auditor verdict with allowed conclusion strength | Unsupported or overstated conclusions |
 | Mechanistic Analysis | What underlying mechanism or root cause explains the evidence? | Mechanistic Model Analyst Report with competing causes and discriminating test | Treating symptoms as causes |
 | Diagnosis | What kind of problem is this? | Root-cause class and competing causes | Treating symptoms as causes |
-| Deep Research Brainstorming | What possible solutions could address the diagnosis? Run multi-Advocate debate to find the best approach. | Debate verdict with convergence analysis, ranked candidates, fusion proposal, unresolved disputes | Single-solution fixation |
+| Deep Research Brainstorming | Based on the diagnosis, what are the best solutions? Run structured research with knowledge gathering, solution mapping, deep evaluation, cross-examination, and synthesis. | Research verdict with ranked candidates, fusion proposal, knowledge gained, discriminating experiments | Single-solution fixation |
 | Pre-Action Compliance | Is it safe and compliant to act now? | Pre-Action Compliance Check | Editing or running before required gates |
 | Branch Plan | What Git branch isolates this research change? | Base branch, base commit, new branch, scope, expected files, rollback point | Experiments contaminate each other |
 | Implementation | What is the smallest useful step? | Patch, design, command, analysis, or check | Overbroad redesign |
@@ -208,7 +208,7 @@ If a section has no content, keep the section and write `N/A` or `none` with a s
 ```markdown
 当前流程：第 X 步 - [task summary]
 当前循环层级：微循环 / 内循环迭代 N / 外循环迭代 M
-当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Deep Research Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
+当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Mechanistic Analysis / Diagnosis / Deep Research Brainstorming / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
 阶段门控：passed / required / blocked / not-applicable
 门控触发原因：objective-fact / formal-claim / evidence-chain-claim / action-request / training-run / user-memory-request / none
 

@@ -1,7 +1,7 @@
 ---
 name: dl-research
 description: Use this skill for deep learning algorithm research and experiment workflows: finding research problems, reading/comparing papers, forming hypotheses, designing models/losses/training protocols, implementing experiments, running sanity checks, diagnosing training logs, planning baselines/ablations, analyzing results, or tuning after a failure diagnosis. Always use for ML/DL research tasks involving Discovery, Design, or Evidence, even when the user only says "run training", "analyze loss", "design an experiment", "write an architecture", "compare baselines", or "debug a model".
-version: 0.4.0
+version: 0.4.1
 ---
 
 # Deep Learning Experimental Research Framework
@@ -19,7 +19,7 @@ Every substantive research response must begin with:
 ```
 当前流程：第 X 步 - [task summary]
 当前循环层级：微循环 / 内循环迭代 N / 外循环迭代 M
-当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Deep Research Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
+当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Mechanistic Analysis / Diagnosis / Deep Research Brainstorming / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
 阶段门控：passed / required / blocked / not-applicable
 门控触发原因：objective-fact / formal-claim / evidence-chain-claim / action-request / training-run / user-memory-request / none
 ```
@@ -91,7 +91,7 @@ If the user provides `/goal`, `Goal:`, or `目标：` text, parse these three fi
 ## Problem-Solving Loop
 
 ```
-Problem → Evidence Pack → Atomic Fact Verification → Formal Derivation Verification → Independent Evidence Audit → Deep Research Brainstorming → Mechanistic Analysis → Atomic Fact Verification → Formal Derivation Verification → Diagnosis → Pre-Action Compliance → Branch Plan → Implementation → Verification → Atomic Fact Verification → Formal Derivation Verification → Independent Evidence Audit → Resolution Decision → Research Record
+Problem → Evidence Pack → Atomic Fact Verification → Formal Derivation Verification → Independent Evidence Audit → Mechanistic Analysis → Atomic Fact Verification → Formal Derivation Verification → Diagnosis → Deep Research Brainstorming → Pre-Action Compliance → Branch Plan → Implementation → Verification → Atomic Fact Verification → Formal Derivation Verification → Independent Evidence Audit → Resolution Decision → Research Record
    ↑                                                                                                                                                                                         |
    └──────────────────────── unresolved / insufficient evidence / invalid problem ────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -106,8 +106,8 @@ This loop is the primary behavior. The agent execution states implement it:
 | Formal Derivation Verification | Verify | Spawn an independent Derivation Verifier subagent. It receives claims + definitions + code paths only; it must not see the main agent's diagnosis or design preferences. It checks whether mathematical, gradient, objective, and mechanism claims follow from verified facts and returns a verdict + corrected statements. |
 | Independent Evidence Audit | Gather, Verify | Ask an independent Evidence Auditor to audit whether verified facts form a traceable, reproducible, comparable, contradiction-aware evidence chain strong enough for the claim. |
 | Mechanistic Analysis | Gather, Route, Verify | Analyze the task, data signal, architecture, loss, optimization dynamics, code path, and causal root causes behind the observed behavior. |
-| Diagnosis | Route | Decide the problem type and competing causes. |
-| Deep Research Brainstorming | Act, Verify | 4 Researchers gather new knowledge (literature, codebase, failures, tools), map the full solution space, deeply evaluate each candidate, cross-examine from different angles, and a Judge synthesizes the verdict. |
+| Diagnosis | Route | Decide the problem type and competing causes. Express as a falsifiable statement. |
+| Deep Research Brainstorming | Act, Verify | Based on the diagnosis, 4 Researchers gather new knowledge (literature, codebase, failures, tools), map the full solution space, deeply evaluate each candidate, cross-examine from different angles, and a Judge synthesizes the verdict. |
 | Pre-Action Compliance | Act, Verify | Block research edits, config changes, training launches, or high-impact commands until required gates and branch records exist. |
 | Branch Plan | Act, Record | Define the Git branch, base commit, allowed change scope, and rollback point for research code changes. |
 | Implementation | Act | Execute the selected smallest useful step allowed by the current gate. |
@@ -123,8 +123,8 @@ Discovery → Design → Evidence
 
 | Research Phase | Goal | Agent Route | Required Output |
 |----------------|------|-------------|-----------------|
-| Discovery | Find the problem, normalize evidence, diagnose the bottleneck, form a falsifiable hypothesis | Problem → Evidence Pack → Diagnosis → Record | Problem statement, evidence pack, diagnosis, core hypothesis |
-| Design | Generate and select a solution strategy, then define algorithm and experiment protocol | Deep Research Brainstorming → Verification plan → Record | Debate verdict, selected strategy, algorithm design, experiment protocol |
+| Discovery | Find the problem, normalize evidence, analyze mechanisms, diagnose the bottleneck, form a falsifiable hypothesis | Problem → Evidence Pack → Mechanistic Analysis → Diagnosis → Record | Problem statement, evidence pack, mechanistic analysis, diagnosis, core hypothesis |
+| Design | Based on diagnosis, research and select a solution strategy, then define algorithm and experiment protocol | Deep Research Brainstorming → Verification plan → Record | Research verdict, selected strategy, algorithm design, experiment protocol |
 | Evidence | Implement, train, actively monitor, run main/ablation experiments, verify resolution, and decide next state | Implementation → Active Monitoring Loop → Verification → Resolution Decision → Record | Sanity evidence, monitoring records, experiment results, ablation analysis, resolution decision |
 
 | Loop Type | Entry | Exit | Granularity | Max Iterations |
@@ -288,7 +288,7 @@ Do not free-form answer with only "key findings", "bottleneck", "recommendation"
 ```markdown
 当前流程：第 X 步 - [task summary]
 当前循环层级：微循环 / 内循环迭代 N / 外循环迭代 M
-当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Deep Research Brainstorming / Mechanistic Analysis / Diagnosis / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
+当前阶段：Evidence Pack / Atomic Fact Verification / Formal Derivation Verification / Independent Evidence Audit / Mechanistic Analysis / Diagnosis / Deep Research Brainstorming / Design / Pre-Action Compliance / Branch Plan / Implementation / Verification / Resolution Decision / Research Record
 阶段门控：passed / required / blocked / not-applicable
 门控触发原因：objective-fact / formal-claim / evidence-chain-claim / action-request / training-run / user-memory-request / none
 
@@ -389,9 +389,10 @@ If any item is missing, stop before acting and create the missing record. If an 
 
 ## Deep Research Brainstorming Rules
 
-Use Deep Research Brainstorming instead of shallow debate or single-agent Solution Generation when the problem is not mechanically obvious. Read `references/debate-brainstorming.md` for the full protocol.
+Use Deep Research Brainstorming after Diagnosis to find the best solution for the diagnosed problem. Read `references/debate-brainstorming.md` for the full protocol.
 
-- Run Deep Research Brainstorming after Independent Evidence Audit and before Mechanistic Analysis.
+- Run Deep Research Brainstorming after Diagnosis and before Pre-Action Compliance.
+- The diagnosis provides the problem statement, root cause hypothesis, and success criteria that drive the research.
 - Phase 1 (Knowledge Gathering): 4 Researchers in parallel — Literature Survey, Codebase Audit, Failure Analysis, Tool/Tech Landscape. Each actively gathers NEW knowledge using available tools.
 - Phase 2 (Solution Space Mapping): Each Researcher proposes multiple directions (not just one). Dedup and merge into unified Solution Space Map.
 - Phase 3 (Deep Evaluation): Each candidate gets rigorous analysis — mechanism derivation, evidence anchoring, cost estimation, verification design, devil's advocate.

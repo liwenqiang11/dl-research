@@ -1,12 +1,12 @@
 # Deep Research Brainstorming
 
-Deep Research Brainstorming replaces shallow debate with structured research. Instead of 4 agents each proposing one solution and arguing, 4 Researchers actively gather new knowledge (literature, codebase, failures, tools), map the full solution space, deeply evaluate each candidate, cross-examine from different angles, and synthesize the best result.
+Deep Research Brainstorming runs AFTER Diagnosis. Given a diagnosed problem, it finds the best solution through structured research: 4 Researchers gather new knowledge (literature, codebase, failures, tools), map the full solution space, deeply evaluate each candidate, cross-examine from different angles, and synthesize the best result.
 
 ## When to Trigger
 
 Trigger Deep Research Brainstorming when:
 
-- Diagnosis is not yet settled and multiple plausible paths exist;
+- Diagnosis is complete and multiple solution paths exist;
 - The problem has multiple competing root causes;
 - The user requests brainstorming, solution exploration, or "find the best approach";
 - After an outer-loop restart when previous solutions failed;

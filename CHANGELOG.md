@@ -2,6 +2,15 @@
 
 All notable changes to dl-research will be documented in this file.
 
+## [0.4.1] - 2026-06-04
+
+### Changed
+- **Workflow reorder**: Deep Research Brainstorming now runs AFTER Diagnosis, not before
+  - Old: Evidence Pack → 核验 → Audit → Deep Research → Mechanistic Analysis → Diagnosis
+  - New: Evidence Pack → 核验 → Audit → Mechanistic Analysis → Diagnosis → Deep Research
+  - Rationale: should diagnose the problem first, then search for solutions based on the diagnosis
+  - Updated: SKILL.md workflow diagram, step table, Status Marking, rules, research-framework.md
+
 ## [0.4.0] - 2026-06-04
 
 ### Changed

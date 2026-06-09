@@ -1,7 +1,7 @@
 ---
 name: dl-research
 description: Use this skill for deep learning algorithm research and experiment workflows: finding research problems, reading/comparing papers, forming hypotheses, designing models/losses/training protocols, implementing experiments, running sanity checks, diagnosing training logs, planning baselines/ablations, analyzing results, or tuning after a failure diagnosis. Always use for ML/DL research tasks involving Discovery, Design, or Evidence, even when the user only says "run training", "analyze loss", "design an experiment", "write an architecture", "compare baselines", or "debug a model".
-version: 0.5.0
+version: 0.6.0
 ---
 
 # Deep Learning Experimental Research Framework
@@ -146,6 +146,7 @@ Discovery → Design → Evidence
 - Read `references/git-branch-management.md` whenever code, config, data processing, evaluation logic, baselines, ablations, or training protocols may change.
 - Read `references/mechanistic-model-analyst.md` whenever the task involves model architecture, loss functions, training failures, metric conflicts, ablation interpretation, probe conflicts, or code-path consistency.
 - Read `references/research-recorder.md` only when the user explicitly asks to remember, record, save, archive, or write the current research result.
+- Read `references/paper-close-reading.md` when the user provides local PDF files and wants to extract transferable design elements for scientific transfer learning. This is an independent tool, not part of the main loop. Output: `design-elements.md` which Deep Research Brainstorming consumes as knowledge input.
 - Use `examples/hypothesis-design-template.md` when producing a Discovery-linked Design Gate document.
 - Use `scripts/freeze_env.sh` before long training or when reproducibility evidence is requested.
 - Use `scripts/sanity_check.py` when the target training script exposes a sanity mode, or when a configured sanity command should be run.

@@ -2,6 +2,19 @@
 
 All notable changes to dl-research will be documented in this file.
 
+## [0.6.0] - 2026-06-04
+
+### Added
+- **Paper Close Reading**: Independent tool for extracting transferable design elements from local PDFs
+  - New reference: `references/paper-close-reading.md`
+  - 3-step protocol: Screening → Deep Read → Integration
+  - Step 1: 1 agent screens papers by relevance to diagnosis
+  - Step 2: N agents in parallel, one per paper, extracts design elements with mechanism derivation, formula, ablation evidence, applicability assessment
+  - Step 3: 1 agent integrates all Paper Cards into unified Design Element Library
+  - Output: `design-elements.md` consumed by Deep Research Brainstorming
+  - Total: 5-7 agents, 3 batches, ~20-30k tokens
+  - Triggered only when user provides local PDFs (not part of main loop)
+
 ## [0.5.0] - 2026-06-04
 
 ### Changed

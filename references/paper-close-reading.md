@@ -50,6 +50,7 @@ Quickly assess which papers are relevant and prioritize reading order.
 ```
 Agent(
   description="Paper Close Reading: Screening",
+  model="sonnet",
   prompt="""
 You are a Paper Screener. Quickly assess which papers are relevant to the diagnosed problem.
 
@@ -99,6 +100,7 @@ Extract transferable design elements from each paper. One agent per paper, run i
 ```
 Agent(
   description="Paper Close Reading: Deep Read - {paper_title}",
+  model="sonnet",
   prompt="""
 You are a Paper Analyst performing deep reading for scientific transfer learning.
 Your goal is NOT to summarize the paper — it is to extract TRANSFERABLE DESIGN ELEMENTS
@@ -211,6 +213,7 @@ Synthesize all Paper Cards into a unified Design Element Library.
 ```
 Agent(
   description="Paper Close Reading: Integration",
+  model="sonnet",
   prompt="""
 You are a Research Integrator. Synthesize multiple Paper Cards into a unified Design Element Library
 that can be consumed by the Deep Research Brainstorming phase.
